@@ -1,0 +1,99 @@
+openapi: 3.1.0
+info:
+  title: Webhook Ingestion Pipeline
+  version: 1.0.0
+  description: >
+    Recruiter-ready webhook ingestion service demonstrating shared-secret verification,
+    idempotency handling, failure visibility, retries, and event-processing observability.
+servers:
+  - url: http://localhost:3000
+paths:
+  /health:
+    get:
+      summary: Service health status
+      responses:
+        '200':
+          description: Healthy service payload
+  /webhooks/{provider}:
+    post:
+      summary: Receive and process a provider webhook
+      parameters:
+        - in: path
+          name: provider
+          required: true
+          schema:
+            type: string
+            enum: [stripe, hubspot, salesforce, internal-app]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId:
+                  type: string
+                eventType:
+                  type: string
+                occurredAt:
+                  type: string
+                  format: date-time
+                idempotencyKey:
+                  type: string
+                data:
+                  type: object
+                  additionalProperties: true
+              required: [eventId, eventType, data]
+      responses:
+        '202':
+          description: Accepted for processing
+        '400':
+          description: Validation failure
+        '401':
+          description: Secret verification failure
+  /api/events:
+    get:
+      summary: List ingested webhook events
+      responses:
+        '200':
+          description: Array of event records
+  /api/events/{id}:
+    get:
+      summary: Fetch one event record
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Event record
+        '404':
+          description: Event not found
+  /api/events/{id}/retry:
+    post:
+      summary: Retry a failed event
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retry completed
+        '500':
+          description: Event cannot be retried
+  /api/failures:
+    get:
+      summary: List dead-letter or failed event attempts
+      responses:
+        '200':
+          description: Failure records
+  /api/metrics:
+    get:
+      summary: View processing and retry metrics
+      responses:
+        '200':
+          description: Aggregated processing metrics
