@@ -142,15 +142,15 @@ curl -X POST http://localhost:3000/webhooks/stripe \
 
 ### Hero Capture
 
-![Swagger UI](/C:/Users/chaus/Documents/Codex/repos/webhook-ingestion-pipeline/screenshots/01-hero.png)
+![Swagger UI](screenshots/01-hero.png)
 
 ### Processing Workflow
 
-![Event workflow](/C:/Users/chaus/Documents/Codex/repos/webhook-ingestion-pipeline/screenshots/02-feature.png)
+![Event workflow](screenshots/02-feature.png)
 
 ### Validation Proof
 
-![Test proof](/C:/Users/chaus/Documents/Codex/repos/webhook-ingestion-pipeline/screenshots/03-proof.png)
+![Test proof](screenshots/03-proof.png)
 
 ---
 
